@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cosmic Code | Learn · Practice · Grow</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+    <button id="menuToggle" class="secondary-button" type="button">☰</button>
+    <a class="brand" href="#dashboard">✦ Cosmic <span>Code</span></a>
+    <button id="profileButton" class="primary-button" type="button">👤 Profile</button>
+</header>
+
+<aside id="sidebar" class="sidebar">
+    <a class="nav-link active" href="#dashboard">Dashboard</a>
+    <a class="nav-link" href="#practice">Coding Practice</a>
+    <a class="nav-link" href="#progress">Progress</a>
+    <a class="nav-link" href="#mentorPanel">AI Mentor</a>
+</aside>
+
+<main id="dashboard" class="main-content">
+    <section class="welcome">
+        <p class="eyebrow">YOUR CODING JOURNEY</p>
+        <h1>Welcome to Cosmic Code ✨</h1>
+        <p>Learn, practise, and grow one problem at a time.</p>
+        <p id="profileGreeting"></p>
+    </section>
+
+    <section class="profile-strip">
+        <div><h3>Learning Domain</h3><p id="domainLabel">{{ profile.domain }}</p></div>
+        <div><h3>Current Level</h3><p id="levelLabel">{{ profile.level }}</p></div>
+        <div><h3>Target Companies</h3><p id="companiesText">{{ profile.companies or "Not set yet" }}</p></div>
+        <div><h3>Weekly Study Hours</h3><p id="hoursText">{{ profile.hours }} hrs/week</p></div>
+        <button id="editProfileButton" class="secondary-button" type="button">Edit Profile</button>
+    </section>
+
+    <section id="practice" class="panel">
+        <p class="eyebrow">PRACTISE HERE</p>
+        <h2>Coding Practice</h2>
+        <p>Choose a problem and solve it in Cosmic Code.</p>
+
+        <div class="filters">
+            <label for="difficultyFilter">Difficulty</label>
+            <select id="difficultyFilter">
+                <option value="All">All difficulties</option>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+            </select>
+            <label for="topicFilter">Topic</label>
+            <select id="topicFilter">
+                <option value="All">All topics</option>
+                <option value="implementation">Implementation</option>
+            </select>
+        </div>
+
+        <div id="problemList" class="problem-list">
+            {% for problem in problem_list %}
+            <article class="problem-card"
+                     data-id="{{ problem.id }}"
+                     data-difficulty="{{ problem.difficulty }}"
+                     data-topic="{{ problem.topic }}">
+                <div>
+                    <h3>{{ problem.title }}</h3>
+                    <p>{{ problem.topic }} · {{ problem.difficulty }} · Rating {{ problem.rating }}</p>
+                </div>
+                <button class="primary-button solve-button"
+                        type="button"
+                        data-id="{{ problem.id }}">Solve Here</button>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section id="editorPanel" class="panel editor-panel" hidden>
+        <div class="editor-heading">
+            <div>
+                <p class="eyebrow">INBUILT CODE EDITOR</p>
+                <h2 id="editorTitle">Select a problem</h2>
+            </div>
+            <button id="closeEditor" class="secondary-button" type="button">Close Editor</button>
+        </div>
+
+        <p id="problemDescription"></p>
+        <h3>Input Format</h3>
+        <p id="inputFormat"></p>
+        <h3>Output Format</h3>
+        <p id="outputFormat"></p>
+
+        <div class="example-box">
+            <h3>Sample Input</h3>
+            <pre id="sampleInput"></pre>
+            <h3>Expected Output</h3>
+            <pre id="sampleOutput"></pre>
+        </div>
+
+        <label for="codeEditor">Your C++ code</label>
+        <textarea id="codeEditor" spellcheck="false" autocapitalize="off"
+                  autocomplete="off" wrap="off"></textarea>
+
+        <label for="customInput">Custom input (optional)</label>
+        <textarea id="customInput" class="custom-input"
+                  placeholder="Enter input for your program"></textarea>
+
+        <div class="editor-actions">
+            <button id="runCodeButton" class="primary-button" type="button">▶ Run Code</button>
+            <button id="submitCodeButton" class="secondary-button" type="button">✓ Submit & Test</button>
+        </div>
+
+        <div class="output-box">
+            <h3>Output and Test Results</h3>
+            <p id="runStatus" aria-live="polite">Your results will appear here.</p>
+            <pre id="runOutput"></pre>
+        </div>
+    </section>
+
+    <div class="dashboard-grid">
+        <section id="progress" class="panel">
+            <h2>Progress Pulse</h2>
+            <div class="progress-track"><span id="progressBar"></span></div>
+            <p id="progressText">0 problems completed</p>
+            <p id="summaryText">Every expert starts somewhere. Try your first problem!</p>
+        </section>
+
+        <section class="panel">
+            <h2>Daily Study Plan</h2>
+            <p id="dailyPlan">Review a concept and practise a coding problem.</p>
+            <h3>Next Step</h3>
+            <p id="nextLevel">Start with Easy problems.</p>
+        </section>
+
+        <section id="mentorPanel" class="panel">
+            <h2>AI Mentor</h2>
+            <p>The AI service is not connected yet.</p>
+            <textarea id="mentorQuestion" placeholder="Type a coding question"></textarea>
+            <button id="sendQuestion" class="primary-button" type="button">Ask Mentor</button>
+            <p id="mentorMessage" aria-live="polite"></p>
+        </section>
+    </div>
+
+    <footer>Cosmic Code · Learn at your own pace</footer>
+</main>
+
+<dialog id="profileDialog">
+    <form id="profileForm">
+        <h2>Your Learning Profile</h2>
+
+        <label for="nameInput">Your name</label>
+        <input id="nameInput" type="text" placeholder="Enter your name">
+
+        <label for="domainInput">Learning domain</label>
+        <select id="domainInput">
+            <option>C++</option>
+            <option>Python</option>
+            <option>Java</option>
+            <option>Web Development</option>
+            <option>AI/ML</option>
+        </select>
+
+        <label for="levelInput">Current level</label>
+        <select id="levelInput">
+            <option>Beginner</option>
+            <option>Basic</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+        </select>
+
+        <label for="companiesInput">Companies to prepare for</label>
+        <input id="companiesInput" type="text"
+               placeholder="e.g. TCS, Infosys, Zoho" required>
+
+        <label for="hoursInput">Weekly study hours</label>
+        <input id="hoursInput" type="number" min="1" max="80" value="5" required>
+
+        <div class="editor-actions">
+            <button class="primary-button" type="submit">Save Profile</button>
+            <button id="closeProfile" class="secondary-button" type="button">Cancel</button>
+        </div>
+    </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
